@@ -1,0 +1,32 @@
+{
+  "name": "wa-consul-kv-sync",
+  "version": "0.0.1",
+  "description": "Synchronizes a json document with key-value pairs in Consul.",
+  "main": "index.js",
+  "bin": {
+    "wa-consul-kv-sync": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gadyonysh/wa-consul-kv-sync.git"
+  },
+  "keywords": [
+    "wildapricot",
+    "consul",
+    "configuration"
+  ],
+  "author": "Vladimir",
+  "license": "COMMERCIAL",
+  "bugs": {
+    "url": "https://github.com/gadyonysh/wa-consul-kv-sync/issues"
+  },
+  "homepage": "https://github.com/gadyonysh/wa-consul-kv-sync#readme",
+  "devDependencies": {
+    "eslint": "^4.6.1",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0"
+  }
+}
