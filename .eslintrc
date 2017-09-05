@@ -1,7 +1,6 @@
 {
   "extends": [
-    "eslint:recommended",
-    "airbnb"
+    "eslint:recommended"
   ],
   "parserOptions": {
     "ecmaVersion": 6,
@@ -26,6 +25,7 @@
     "import/no-unresolved": ["error", { "commonjs": true }],
     "import/no-extraneous-dependencies": 0,
     "import/extensions": 0,
-    "import/no-named-as-default": 0
+    "import/no-named-as-default": 0,
+    "no-console": 0
   }
 }
