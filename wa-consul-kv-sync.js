@@ -6,26 +6,15 @@ const pkg = require('./package.json');
 const getDirFiles = require('./lib/get-dir-files');
 const errorHandler = require('./lib/error-handler');
 const addErrorHandler = require('./lib/add-error-handler');
-const processFileData = require('./lib/process-file-data');
-const getFileKey = require('./lib/get-file-key');
-const createOnAllWritten = require('./lib/on-all-written');
+const displayHelp = require('./lib/display-help');
+const getFileKeys = require('./lib/get-file-keys');
 
-const onHelp = () =>
-{
-  console.log('    Examples:');
-  console.log('');
-  console.log('    $ wa-consul-kv-sync /home/wa/consul/config /home/wa/config/consul.json');
-  console.log('');
-  console.log('    $ wa-consul-kv-sync -h');
-  console.log('');
-  console.log('    $ wa-consul-kv-sync -V');
-  console.log('');
-};
-
-commander.version(pkg.version)
+commander
+  .version(pkg.version)
+  .option('--json-root [value]', 'configuration JSON root node ("Configurations" by default)')
   .usage('[options] [path-to-config-root] [path-to-output-file]')
   .description('Merges JSON manifests for consul\'s key value store.')
-  .on('--help', onHelp);
+  .on('--help', displayHelp);
 
 commander.parse(process.argv);
 
@@ -35,8 +24,13 @@ if (!commander.args.length || commander.args.length !== 2)
   process.exit(1);
 }
 
+const jsonRoot = commander.jsonRoot || 'Configurations';
 const configRoot = commander.args[0];
 const output = commander.args[1];
+
+const json = {};
+
+json[jsonRoot] = {};
 
 const files = getDirFiles(configRoot, errorHandler);
 let writes = 0;
@@ -47,27 +41,42 @@ const onComplete = () =>
   process.exit(0);
 };
 
-const createOnDataWritten = (file, filesLength, onAllWritten) => addErrorHandler(() =>
+const addFileValue = (file, prefixLength, rootNs) =>
 {
-  writes++;
-  console.log('"' + file + '" processed, ' + writes + ' of ' + filesLength);
-
-  if (writes === filesLength)
+  fs.readFile(file, 'utf8', addErrorHandler(data =>
   {
-    onAllWritten();
-  }
+    const keys = getFileKeys(file, prefixLength);
+    const lastKey = keys.pop();
+
+    let prevNs = rootNs;
+
+    keys.forEach(key =>
+    {
+      prevNs[key] = prevNs[key] || {};
+      prevNs = prevNs[key];
+    });
+
+    try
+    {
+      prevNs[lastKey] = JSON.parse(data);
+    }
+    catch (err)
+    {
+      prevNs[lastKey] = data;
+    }
+
+    writes++;
+    console.log('"' + file + '" processed, ' + writes + ' of ' + files.length);
+
+    if (writes === files.length)
+    {
+      fs.writeFile(output, JSON.stringify(json), 'utf8', addErrorHandler(onComplete));
+    }
+  }));
+};
+
+files.forEach(file =>
+{
+  addFileValue(file, configRoot.length + 1, json[jsonRoot]);
 });
-
-fs.writeFile(output, '{', 'utf8', addErrorHandler(() =>
-{
-  const onAllWritten = createOnAllWritten(output, onComplete);
-
-  files.forEach(file =>
-  {
-    const onDataWritten = createOnDataWritten(file, files.length, onAllWritten);
-    const onFileRead = processFileData(output, getFileKey(file, configRoot.length), onDataWritten);
-
-    fs.readFile(file, 'utf8', onFileRead);
-  });
-}));
 

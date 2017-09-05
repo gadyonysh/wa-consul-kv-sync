@@ -27,9 +27,14 @@ wa-consul-kv-sync [options] [path-to-config-root] [path-to-output-file]
 ```
     -h, --help         output usage information
     -V, --version      output the version number
+    --json-root        defines configuration JSON root node ("Configurations" by default)
 ```
 
 ### Expamples:
+
+```
+    $ wa-consul-kv-sync --json-root Config /home/wa/consul/config /home/wa/config/consul.json
+```
 
 ```
     $ wa-consul-kv-sync /home/wa/consul/config /home/wa/config/consul.json
