@@ -23,8 +23,8 @@ const onHelp = () =>
 };
 
 commander.version(pkg.version)
-  .usage('[config path]')
-  .description('Synchronizes one or more JSON manifests with consul\'s key value store.')
+  .usage('[options] [path-to-config-root] [path-to-output-file]')
+  .description('Merges JSON manifests for consul\'s key value store.')
   .on('--help', onHelp);
 
 commander.parse(process.argv);
