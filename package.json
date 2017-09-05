@@ -1,6 +1,6 @@
 {
   "name": "wa-consul-kv-sync",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Synchronizes a json document with key-value pairs in Consul.",
   "main": "index.js",
   "bin": {
