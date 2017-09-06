@@ -1,6 +1,6 @@
 {
   "name": "wa-consul-kv-sync",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Merges JSON manifests for consul's key value store.",
   "main": "wa-consul-kv-sync.js",
   "bin": {
