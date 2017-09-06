@@ -56,15 +56,7 @@ const addFileValue = (file, prefixLength, rootNs) =>
       prevNs = prevNs[key];
     });
 
-    try
-    {
-      prevNs[lastKey] = JSON.parse(data);
-      prevNs[lastKey] = JSON.stringify(data);
-    }
-    catch (err)
-    {
-      prevNs[lastKey] = data;
-    }
+    prevNs[lastKey] = data;
 
     writes++;
     console.log('"' + file + '" processed, ' + writes + ' of ' + files.length);
