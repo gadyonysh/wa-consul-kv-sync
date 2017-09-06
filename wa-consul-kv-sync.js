@@ -35,11 +35,11 @@ json[jsonRoot] = {};
 const files = getDirFiles(configRoot, errorHandler);
 let writes = 0;
 
-const onComplete = () =>
+const onComplete = addErrorHandler(() =>
 {
   console.log('Complete. ' + files.length + ' files processed.');
   process.exit(0);
-};
+});
 
 const addFileValue = (file, prefixLength, rootNs) =>
 {
@@ -59,6 +59,7 @@ const addFileValue = (file, prefixLength, rootNs) =>
     try
     {
       prevNs[lastKey] = JSON.parse(data);
+      prevNs[lastKey] = JSON.stringify(data);
     }
     catch (err)
     {
@@ -70,7 +71,7 @@ const addFileValue = (file, prefixLength, rootNs) =>
 
     if (writes === files.length)
     {
-      fs.writeFile(output, JSON.stringify(json), 'utf8', addErrorHandler(onComplete));
+      fs.writeFile(output, JSON.stringify(json), 'utf8', onComplete);
     }
   }));
 };
